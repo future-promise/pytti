@@ -30,7 +30,7 @@ class DirectImageGuide():
     """
     for j in tqdm(range(100)):
       pass
-    for i in tqdm(range(n_steps)):
+    for i in tqdm(range(n_steps + 10)):
       losses = self.train(prompts, i)
       self.update(i, losses)
 
