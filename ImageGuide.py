@@ -51,6 +51,7 @@ class DirectImageGuide():
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     losses.append(tv_loss(z)*self.tv_weight)
     loss = sum(losses)
+    print('loss',loss)
     loss.backward()
     self.optimizer.step()
     self.image_rep.update()
