@@ -32,6 +32,7 @@ class PixelImage(DifferentiableImage):
     self.tensor = nn.Parameter(torch.zeros(n_pallets, height, width).to(device))
     self.output_axes = ('n', 's', 'y', 'x')
     self.scale = scale
+    print("init pixel image")
 
   def sort_pallet(self):
     pallet = (self.pallet/self.pallet_inertia).clamp(0,1)
