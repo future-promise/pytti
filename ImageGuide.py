@@ -28,6 +28,8 @@ class DirectImageGuide():
     prompts: (ClipPrompt list) list of prompts
     n_steps: (positive integer) steps to run
     """
+    for j in tqdm(100):
+      pass
     for i in tqdm(range(n_steps)):
       losses = self.train(prompts, i)
       self.update(i, losses)
