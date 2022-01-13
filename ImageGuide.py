@@ -51,6 +51,7 @@ class DirectImageGuide():
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     losses.append(tv_loss(z)*self.tv_weight)
     print('losses', losses)
+    print('sum losses', sum(losses))
     print('saturation', saturation_loss(z))
     loss = sum(losses)
     loss.backward()
