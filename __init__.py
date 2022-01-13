@@ -86,7 +86,7 @@ def clamp_grad(input, min, max):
 
 def tv_loss(input):
   """L2 total variation loss, as in Mahendran et al."""
-  print('tv loss', input)
+  print('tv loss', input.size)
   input = F.pad(input, (0, 1, 0, 1), 'replicate')
   x_diff = input[..., :-1, 1:] - input[..., :-1, :-1]
   y_diff = input[..., 1:, :-1] - input[..., :-1, :-1]
