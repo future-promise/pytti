@@ -12,7 +12,7 @@ class DirectImageGuide():
   optimizer: (Class)               optimizer class to use. Defaults to Adam
   all other arguments are passed as kwargs to the optimizer.
   """
-  def __init__(self, image_rep, embedder, tv_weight = 0.15, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
+  def __init__(self, image_rep, embedder, tv_weight = 0.15, saturation_weight = 0.15, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
     self.embedder = embedder
     if lr is None:
@@ -21,6 +21,7 @@ class DirectImageGuide():
     optimizer_params['weight_decay']=weight_decay
     self.optimizer = optimizer(image_rep.parameters(), **optimizer_params)
     self.tv_weight = tv_weight
+    self.saturation_weight = saturation_weight
 
   def run_steps(self, prompts, n_steps):
     """
@@ -52,8 +53,10 @@ class DirectImageGuide():
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     variation_loss = tv_loss(z)*self.tv_weight
+    sat_loss = saturation_loss(z, self.saturation_weight)
     losses.append(variation_loss)
-    print('tv loss',variation_loss,', saturation loss', saturation_loss(z))
+    losses.append(sat_loss)
+    print('tv loss',variation_loss,', saturation loss', sat_loss)
     loss = sum(losses)
     loss.backward()
     self.optimizer.step()
