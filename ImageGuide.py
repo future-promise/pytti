@@ -28,9 +28,7 @@ class DirectImageGuide():
     prompts: (ClipPrompt list) list of prompts
     n_steps: (positive integer) steps to run
     """
-    for j in tqdm(range(100)):
-      pass
-    for i in tqdm(range(n_steps + 10)):
+    for i in tqdm(range(n_steps)):
       losses = self.train(prompts, i)
       self.update(i, losses)
 
@@ -51,11 +49,7 @@ class DirectImageGuide():
     image_embeds = self.embedder(self.image_rep, input=z)
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
-    variation_loss = tv_loss(z)*self.tv_weight
-    sat_loss = saturation_loss(z, 0.1)
-    losses.append(variation_loss)
-    losses.append(sat_loss)
-    print('tv loss',variation_loss,', saturation loss', sat_loss)
+    losses.append(tv_loss(z)*self.tv_weight)
     loss = sum(losses)
     loss.backward()
     self.optimizer.step()
