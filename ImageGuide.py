@@ -51,7 +51,9 @@ class DirectImageGuide():
     image_embeds = self.embedder(self.image_rep, input=z)
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
-    losses.append(tv_loss(z)*self.tv_weight)
+    variation_loss = tv_loss(z)*self.tv_weight
+    losses.append(variation_loss)
+    print('tv loss',variation_loss,', saturation loss', saturation_loss(z))
     loss = sum(losses)
     loss.backward()
     self.optimizer.step()
