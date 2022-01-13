@@ -95,7 +95,7 @@ normalize = transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
                                  std=[0.26862954, 0.26130258, 0.27577711])
 
 
-def saturation_loss(input, saturation_weight = -0.75):
+def saturation_loss(input, saturation_weight = 0.75):
   # based on the old "percepted colourfulness" heuristic from Hasler and Süsstrunk’s 2003 paper
   # https://www.researchgate.net/publication/243135534_Measuring_Colourfulness_in_Natural_Images
   _pixels = input.permute(0, 2, 3, 1).reshape(-1, 3)
