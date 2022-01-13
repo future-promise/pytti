@@ -21,7 +21,7 @@ class DifferentiableImage(nn.Module):
     self.image_shape   = (width, height)
     self.pixel_format = format
     self.output_axes  = ('x', 'y', 's')
-    self.lr = 0.02
+    self.lr = 0.03
 
   def decode_training_tensor(self):
     """
