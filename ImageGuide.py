@@ -12,7 +12,7 @@ class DirectImageGuide():
   optimizer: (Class)               optimizer class to use. Defaults to Adam
   all other arguments are passed as kwargs to the optimizer.
   """
-  def __init__(self, image_rep, embedder, tv_weight = 0.15, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
+  def __init__(self, image_rep, embedder, tv_weight = 0.15, sat_weight = 1, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
     self.embedder = embedder
     if lr is None:
@@ -21,6 +21,7 @@ class DirectImageGuide():
     optimizer_params['weight_decay']=weight_decay
     self.optimizer = optimizer(image_rep.parameters(), **optimizer_params)
     self.tv_weight = tv_weight
+    self.sat_weight = sat_weight
 
   def run_steps(self, prompts, n_steps):
     """
