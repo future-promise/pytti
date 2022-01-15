@@ -22,8 +22,8 @@ class HDMultiClipEmbedder(nn.Module):
                               K.RandomAffine(degrees=30, translate=0.1, p=0.8, padding_mode='border'),
                               K.RandomPerspective(0.2, p=0.4,),
                               K.ColorJitter(hue=0.01, saturation=0.01,  p=0.7),
-                              K.CenterCrop(cropping_mode='resample', p=1.0, return_transform=True)
-                              )        
+                              K.CenterCrop(size=perceptors[0].visual.input_resolution , cropping_mode='resample', p=1.0, return_transform=True)
+                              )    
 
     self.input_axes  = ('n', 's', 'y', 'x')
     self.output_axes = ('c', 'n', 'i')
