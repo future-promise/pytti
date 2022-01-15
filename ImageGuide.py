@@ -51,12 +51,10 @@ class DirectImageGuide():
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     
-    if i < 50:
-      print('big tv',i)
+    if i < 150:
       losses.append(tv_loss(z)*self.tv_weight)
     else:
-      print('small tv',i)
-      losses.append(tv_loss(z)* (self.tv_weight / 10))
+      losses.append(tv_loss(z)* (self.tv_weight / 5))
     #print('losses', losses)
     #print('sum losses no sat', sum(losses))
     #print('saturation loss', saturation_loss(z, self.sat_weight))
