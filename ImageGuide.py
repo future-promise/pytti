@@ -12,7 +12,17 @@ class DirectImageGuide():
   optimizer: (Class)               optimizer class to use. Defaults to Adam
   all other arguments are passed as kwargs to the optimizer.
   """
-  def __init__(self, image_rep, embedder, tv_weight = 0.15, sat_weight = 1, tv_dropoff_step=200, tv_dropoff_div=5, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
+  def __init__(
+    self, 
+    image_rep, 
+    embedder, 
+    tv_weight = 0.15, 
+    sat_weight = 1, 
+    tv_dropoff_step=200, 
+    tv_dropoff_div=5, 
+    symmetry_weight=1,
+    # defaults
+    optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
     self.embedder = embedder
     if lr is None:
@@ -24,6 +34,7 @@ class DirectImageGuide():
     self.sat_weight = sat_weight
     self.tv_dropoff_step = tv_dropoff_step
     self.tv_dropoff_div = tv_dropoff_div
+    self.symmetry_weight = symmetry_weight
 
   def run_steps(self, prompts, n_steps):
     """
@@ -62,7 +73,7 @@ class DirectImageGuide():
     
     #print('losses', losses)
     print('sum losses no sym', sum(losses))
-    print('sym loss', symmetry_loss(z))
+    print('sym loss', symmetry_loss(z, self.symmetry_weight))
     #print('sum losses with sat', sum(losses))
     #print('---')
     loss = sum(losses)
