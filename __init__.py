@@ -1,6 +1,7 @@
 import torch
 from torchvision import transforms
 from torch.nn import functional as F
+from torch import nn
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -107,4 +108,9 @@ def saturation_loss(input, saturation_weight = 1):
   mean_rggb = torch.sqrt(rg_mean**2 + yb_mean**2)
   colorfullness = std_rggb+.3*mean_rggb
   return -colorfullness*saturation_weight/10.0
+
+def symmetry_loss(input, weight = 1):
+  mseloss = nn.MSELoss()
+  cur_loss = mseloss(input, torch.flip(input,[3])) 
+  return cur_loss * weight
 

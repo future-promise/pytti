@@ -57,10 +57,12 @@ class DirectImageGuide():
       losses.append(tv_loss(z)*self.tv_weight)
     else:
       losses.append(tv_loss(z)* (self.tv_weight / self.tv_dropoff_div))
-    #print('losses', losses)
-    #print('sum losses no sat', sum(losses))
-    #print('saturation loss', saturation_loss(z, self.sat_weight))
+
     losses.append(saturation_loss(z, self.sat_weight))
+    
+    #print('losses', losses)
+    print('sum losses no sym', sum(losses))
+    print('sym loss', symmetry_loss(z))
     #print('sum losses with sat', sum(losses))
     #print('---')
     loss = sum(losses)
