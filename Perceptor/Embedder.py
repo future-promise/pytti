@@ -21,7 +21,10 @@ class HDMultiClipEmbedder(nn.Module):
     self.augs = nn.Sequential(K.RandomHorizontalFlip(p=0.5),
                               K.RandomAffine(degrees=30, translate=0.1, p=0.8, padding_mode='border'),
                               K.RandomPerspective(0.2, p=0.4,),
-                              K.ColorJitter(hue=0.01, saturation=0.01,  p=0.7),)
+                              K.ColorJitter(hue=0.01, saturation=0.01,  p=0.7),
+                              K.CenterCrop(cropping_mode='resample', p=1.0, return_transform=True)
+                              )        
+
     self.input_axes  = ('n', 's', 'y', 'x')
     self.output_axes = ('c', 'n', 'i')
     self.perceptors = perceptors
@@ -39,7 +42,6 @@ class HDMultiClipEmbedder(nn.Module):
       input = format_input(input, diff_image, self)
     max_size = min(sideX, sideY)
     image_embeds = []
-    print('cut sizes', self.cut_sizes)
     for cut_size, perceptor in zip(self.cut_sizes, perceptors):
       min_size = min(sideX, sideY, cut_size)
 
@@ -57,7 +59,6 @@ class HDMultiClipEmbedder(nn.Module):
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
-      print("cutouts size", cutouts.size())
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
