@@ -39,6 +39,7 @@ class HDMultiClipEmbedder(nn.Module):
       input = format_input(input, diff_image, self)
     max_size = min(sideX, sideY)
     image_embeds = []
+    print('cut sizes', self.cut_sizes)
     for cut_size, perceptor in zip(self.cut_sizes, perceptors):
       min_size = min(sideX, sideY, cut_size)
 
