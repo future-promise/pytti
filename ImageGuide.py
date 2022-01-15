@@ -12,7 +12,7 @@ class DirectImageGuide():
   optimizer: (Class)               optimizer class to use. Defaults to Adam
   all other arguments are passed as kwargs to the optimizer.
   """
-  def __init__(self, image_rep, embedder, tv_weight = 0.15, sat_weight = 1, sat_dropoff_step=200, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
+  def __init__(self, image_rep, embedder, tv_weight = 0.15, sat_weight = 1, tv_dropoff_step=200, tv_dropoff_div=5, optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
     self.embedder = embedder
     if lr is None:
@@ -22,7 +22,8 @@ class DirectImageGuide():
     self.optimizer = optimizer(image_rep.parameters(), **optimizer_params)
     self.tv_weight = tv_weight
     self.sat_weight = sat_weight
-    self.sat_dropoff_step = sat_dropoff_step
+    self.tv_dropoff_step = tv_dropoff_step
+    self.tv_dropoff_div = tv_dropoff_div
 
   def run_steps(self, prompts, n_steps):
     """
@@ -52,10 +53,10 @@ class DirectImageGuide():
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     
-    if i < self.sat_dropoff_step:
+    if i < self.tv_dropoff_step:
       losses.append(tv_loss(z)*self.tv_weight)
     else:
-      losses.append(tv_loss(z)* (self.tv_weight / 5))
+      losses.append(tv_loss(z)* (self.tv_weight / self.tv_dropoff_div))
     #print('losses', losses)
     #print('sum losses no sat', sum(losses))
     #print('saturation loss', saturation_loss(z, self.sat_weight))
