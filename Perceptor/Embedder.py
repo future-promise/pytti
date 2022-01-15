@@ -57,6 +57,7 @@ class HDMultiClipEmbedder(nn.Module):
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
+      print("cutouts size", cutouts.size())
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
