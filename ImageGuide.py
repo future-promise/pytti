@@ -79,6 +79,8 @@ class DirectImageGuide():
     #print('losses', losses)
     print('sum losses', sum(losses))
     print('contrast loss', contrast_loss(z, self.contrast_weight))
+    print('tv loss', tv_loss(z)*self.tv_weight)
+    print('sat loss', saturation_loss(z, self.sat_weight))
     #losses.append(contrast_loss(z, self.contrast_weight))
     #print('sum losses with sym', sum(losses))
     print('---')
