@@ -115,13 +115,10 @@ def symmetry_loss(input, weight = 1):
   return cur_loss * weight
 
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.05, brightness = 10):
-  contrasted = (contrast_diff_weight * (input - 128)) + 128
-  contrasted = torch.clamp(contrasted, min=0, max=255)
-  print('contrast input size', input.size())
-  print('contrast input min', torch.min(input))
-  print('contrast input max', torch.max(input))
+  contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
+  contrasted = torch.clamp(contrasted, min=0, max=1)
   print('contrast input', input)
-  # print('contrast output', contrasted)
+  print('contrast output', contrasted)
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, contrasted)
   return cur_loss * weight / 10.0

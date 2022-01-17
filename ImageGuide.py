@@ -79,7 +79,7 @@ class DirectImageGuide():
     #print('losses', losses)
     print('sum losses', sum(losses))
     print('contrast loss', contrast_loss(z, self.contrast_weight))
-    losses.append(contrast_loss(z, self.contrast_weight))
+    #losses.append(contrast_loss(z, self.contrast_weight))
     #print('sum losses with sym', sum(losses))
     print('---')
 
