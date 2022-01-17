@@ -20,7 +20,8 @@ class DirectImageGuide():
     sat_weight = 1, 
     tv_dropoff_step=200, 
     tv_dropoff_div=5, 
-    symmetry_weight=1,
+    symmetry_weight=0,
+    contrast_weight=1,
     # defaults
     optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
@@ -35,6 +36,7 @@ class DirectImageGuide():
     self.tv_dropoff_step = tv_dropoff_step
     self.tv_dropoff_div = tv_dropoff_div
     self.symmetry_weight = symmetry_weight
+    self.contrast_weight = contrast_weight
 
   def run_steps(self, prompts, n_steps):
     """
@@ -76,7 +78,8 @@ class DirectImageGuide():
 
     #print('losses', losses)
     print('sum losses', sum(losses))
-    print('contrast loss', contrast_loss(z))
+    print('contrast loss', contrast_loss(z, self.contrast_weight))
+    losses.append(contrast_loss(z, self.contrast_weight))
     #print('sum losses with sym', sum(losses))
     print('---')
 
