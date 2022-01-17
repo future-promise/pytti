@@ -71,12 +71,15 @@ class DirectImageGuide():
 
     losses.append(saturation_loss(z, self.sat_weight))
     
+    if self.symmetry_weight > 0:
+      losses.append(symmetry_loss(z, self.symmetry_weight))
+
     #print('losses', losses)
-    print('sum losses no sym', sum(losses))
-    print('sym loss', symmetry_loss(z, self.symmetry_weight))
-    losses.append(symmetry_loss(z, self.symmetry_weight))
-    print('sum losses with sym', sum(losses))
+    print('sum losses', sum(losses))
+    print('contrast loss', contrast_loss(z))
+    #print('sum losses with sym', sum(losses))
     print('---')
+
     loss = sum(losses)
     loss.backward()
     self.optimizer.step()
