@@ -115,11 +115,6 @@ def symmetry_loss(input, weight = 1):
   return cur_loss * weight
 
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
-  gray = transforms.Grayscale()
-  gray_input = gray(input)
-  print('gray in', gray_input)
-  print('gray in size', gray_input.size())
-
   contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
   contrasted = torch.clamp(contrasted, min=0, max=1)
   #print('contrast input', input)
@@ -129,10 +124,13 @@ def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 1
   return cur_loss * weight * 10.0
 
 def contrast_loss_grayscale(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
-  contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
+  gray = transforms.Grayscale()
+  gray_input = gray(input)
+
+  contrasted = (contrast_diff_weight * (gray_input - 0.5)) + 0.5
   contrasted = torch.clamp(contrasted, min=0, max=1)
   #print('contrast input', input)
   #print('contrast output', contrasted)
   mseloss = nn.MSELoss()
-  cur_loss = mseloss(input, contrasted)
+  cur_loss = mseloss(gray_input, contrasted)
   return cur_loss * weight * 10.0
