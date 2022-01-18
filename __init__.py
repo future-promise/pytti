@@ -153,14 +153,13 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
 
 def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
   sobel_mask = kornia.filters.sobel(input) + 1
-  print('sobel', torch.amin(sobel_mask), torch.amax(sobel_mask))
   adjusted = (sobel_mask * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
 
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, adjusted)
 
-  return cur_loss * weight
+  return cur_loss * weight * 10
 
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
   contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
