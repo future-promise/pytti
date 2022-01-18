@@ -82,11 +82,11 @@ class DirectImageGuide():
     #print('contrast gray', contrast_loss_grayscale(z, self.contrast_weight))
     losses.append(contrast_loss(z, self.contrast_weight))
     #if i % 25 == 0:
+    print('contrast loss', contrast_loss(z, self.contrast_weight))
     print('contrast edge loss', contrast_loss_edge(z, self.contrast_weight))
     #losses.append(contrast_loss_grayscale(z, self.contrast_weight))
-    #print('sum losses w contrast', sum(losses))
-    #print('sum losses with sym', sum(losses))
-    #print('---')
+    print('sum losses', sum(losses))
+    print('---')
 
     loss = sum(losses)
     loss.backward()
