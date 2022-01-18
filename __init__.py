@@ -2,8 +2,6 @@ import torch
 from torchvision import transforms
 from torch.nn import functional as F
 from torch import nn
-from scipy import ndimage
-import numpy as np
 import kornia
 
 
@@ -119,38 +117,6 @@ def symmetry_loss(input, weight = 1):
   return cur_loss * weight
 
 
-def sobel_filters(img):
-    Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
-    Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
-
-    Ix = nn.functional.conv2d(img, Kx,stride=1, padding='same')
-    Iy = nn.functional.conv2d(img, Ky,stride=1, padding='same')
-
-    G = torch.hypot(Ix, Iy)
-    G = G / torch.amax(G) * 255
-    
-    return G
-
-"""
-def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
-  gray = transforms.Grayscale()
-  gray_sobel_input = gray(input)
-  sobel_mask = sobel_filters(gray_sobel_input)
-
-  sobel_mask_clamped = sobel_mask / 255
-  sobel_mask_converted = 1 + (1 * sobel_mask_clamped)
-  sobel_mask_converted = nn.functional.pad(sobel_mask_converted, (1,1,1,1))
-  #print('sobel shapes', sobel_mask_converted.shape, input.shape)
-  #print('sobel mask eg', sobel_mask_converted.squeeze()[30])
-  adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
-  adjusted = torch.clamp(adjusted, min=0, max=1)
-
-  mseloss = nn.MSELoss()
-  cur_loss = mseloss(input, adjusted)
-
-  return cur_loss * weight * 10
-"""
-
 def contrast_loss_edge(input, weight = 1, sobel_weight= 1, sobel_minimum = 1.1):
   sobel_mask = (kornia.filters.canny(input)[1] * sobel_weight) + sobel_minimum
   adjusted = (sobel_mask * (input - 0.5)) + 0.5
@@ -167,16 +133,4 @@ def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 1
 
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, contrasted)
-  return cur_loss * weight * 10.0
-
-def contrast_loss_grayscale(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
-  gray = transforms.Grayscale()
-  gray_input = gray(input)
-
-  contrasted = (contrast_diff_weight * (gray_input - 0.5)) + 0.5
-  contrasted = torch.clamp(contrasted, min=0, max=1)
-  #print('contrast input', input)
-  #print('contrast output', contrasted)
-  mseloss = nn.MSELoss()
-  cur_loss = mseloss(gray_input, contrasted)
   return cur_loss * weight * 10.0

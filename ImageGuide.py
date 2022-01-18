@@ -22,9 +22,6 @@ class DirectImageGuide():
     tv_dropoff_div=5, 
     symmetry_weight=0,
     contrast_weight=1,
-    sobel_weight=1,
-    sobel_minimum=1,
-    sobel_start=0,
     # defaults
     optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
@@ -40,9 +37,6 @@ class DirectImageGuide():
     self.tv_dropoff_div = tv_dropoff_div
     self.symmetry_weight = symmetry_weight
     self.contrast_weight = contrast_weight
-    self.sobel_weight = sobel_weight
-    self.sobel_minimum = sobel_minimum
-    self.sobel_start = sobel_start
 
   def run_steps(self, prompts, n_steps):
     """
@@ -82,18 +76,12 @@ class DirectImageGuide():
     if self.symmetry_weight > 0:
       losses.append(symmetry_loss(z, self.symmetry_weight))
 
-    #print('losses', losses)
-    #print('sum losses', sum(losses))
-    #print('contrast loss', contrast_loss(z, self.contrast_weight))
-    #print('contrast gray', contrast_loss_grayscale(z, self.contrast_weight))
-    #losses.append(contrast_loss(z, self.contrast_weight))
-    #if i % 25 == 0:
-    #print('contrast loss', contrast_loss(z, self.contrast_weight))
-    #print('contrast edge loss', contrast_loss_edge(z, self.contrast_weight))
-    if i >= self.sobel_start:
-      losses.append(contrast_loss_edge(z, self.contrast_weight, self.sobel_weight, self.sobel_minimum))
-    else:
-      losses.append(contrast_loss(z, self.contrast_weight))
+
+    losses.append(contrast_loss(z, self.contrast_weight))
+
+    #if i >= self.sobel_start:
+    #  losses.append(contrast_loss_edge(z, self.contrast_weight, self.sobel_weight, self.sobel_minimum))
+
     #losses.append(contrast_loss_grayscale(z, self.contrast_weight))
     #print('sum losses', sum(losses))
     #print('---')
