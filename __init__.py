@@ -118,7 +118,7 @@ def symmetry_loss(input, weight = 1):
 
 
 def sobel_filters(img):
-    print('sobel filter call', img.size())
+    print('sobel filter call', img.size(), torch.amin(img), torch.amax(img))
     Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
     Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
 
@@ -162,7 +162,7 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
   #print('sobel mask eg', sobel_mask_converted.squeeze()[30])
   adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
-
+  print('adjusted', torch.amin(adjusted), torch.amax(adjusted))
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, adjusted)
 
