@@ -132,9 +132,9 @@ def sobel_filters(img):
 
 def contrast_loss_edge(input):
   gray = transforms.Grayscale()
-  gray_input = gray(input)
-  print('gray input', gray_input.size())
-
+  gray_sobel_input = gray(input).squeeze().numpy()
+  sobel_mask = sobel_filters(gray_sobel_input)
+  print('gray input', gray_sobel_input.shape, sobel_mask.shape)
   #sobel_mask_clamped = mask / 255
   #sobel_mask_converted = 1.25 + (1 * sobel_mask_clamped)
   #adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
