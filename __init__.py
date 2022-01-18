@@ -4,6 +4,8 @@ from torch.nn import functional as F
 from torch import nn
 from scipy import ndimage
 import numpy as np
+import kornia
+
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -150,17 +152,9 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
 """
 
 def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
-  gray = transforms.Grayscale()
-  gray_sobel_input = gray(input)
-  sobel_mask = sobel_filters(gray_sobel_input)
-
-  sobel_mask_clamped = sobel_mask / 255
-  sobel_mask_converted = 1 + (1 * sobel_mask_clamped)
-  #sobel_mask_converted = nn.functional.pad(sobel_mask_converted, (1,1,1,1))
-  #print('sobel shapes', sobel_mask_converted.shape, input.shape)
-  print('sobel mask eg', torch.amin(sobel_mask_clamped), torch.amax(sobel_mask_clamped), sobel_mask_clamped.dtype)
-  ones = torch.rand(input.shape) + 0.1
-  adjusted = (sobel_mask_clamped * (input - 0.5)) + 0.5
+  sobel_mask = kornia.filters.sobel(input)
+  print('sobel edge',sobel_mask.shape, input.shape)
+  adjusted = (sobel_mask * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
 
   mseloss = nn.MSELoss()
