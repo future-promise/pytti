@@ -129,16 +129,20 @@ def sobel_filters(img):
     
     return G
 
-def contrast_loss_edge(input):
+def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
   gray = transforms.Grayscale()
   gray_sobel_input = gray(input)
   sobel_mask = sobel_filters(gray_sobel_input)
-  print('gray input', gray_sobel_input.shape, sobel_mask.shape, torch.amin(sobel_mask), torch.amax(sobel_mask))
-  #sobel_mask_clamped = mask / 255
-  #sobel_mask_converted = 1.25 + (1 * sobel_mask_clamped)
-  #adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
-  #return torch.clamp(adjusted, min=0, max=1)
-  return
+
+  sobel_mask_clamped = sobel_mask / 255
+  sobel_mask_converted = 1 + (1 * sobel_mask_clamped)
+  adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
+  adjusted = torch.clamp(adjusted, min=0, max=1)
+
+  mseloss = nn.MSELoss()
+  cur_loss = mseloss(input, adjusted)
+
+  return cur_loss * weight * 10
 
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
   contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
