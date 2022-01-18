@@ -152,7 +152,7 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
 """
 
 def contrast_loss_edge(input, weight = 1, sobel_weight= 1, sobel_minimum = 1.1):
-  sobel_mask = (kornia.filters.sobel(input) * sobel_weight) + sobel_minimum
+  sobel_mask = (kornia.filters.canny(input)[1] * sobel_weight) + sobel_minimum
   adjusted = (sobel_mask * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
 
@@ -164,8 +164,7 @@ def contrast_loss_edge(input, weight = 1, sobel_weight= 1, sobel_minimum = 1.1):
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
   contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
   contrasted = torch.clamp(contrasted, min=0, max=1)
-  #print('contrast input', input)
-  #print('contrast output', contrasted)
+
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, contrasted)
   return cur_loss * weight * 10.0
