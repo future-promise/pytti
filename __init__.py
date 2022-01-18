@@ -158,9 +158,9 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
   sobel_mask_converted = 1 + (1 * sobel_mask_clamped)
   #sobel_mask_converted = nn.functional.pad(sobel_mask_converted, (1,1,1,1))
   #print('sobel shapes', sobel_mask_converted.shape, input.shape)
-  #print('sobel mask eg', sobel_mask_converted.squeeze()[30])
+  print('sobel mask eg', torch.amin(sobel_mask_clamped), torch.amax(sobel_mask_clamped), sobel_mask_clamped.dtype)
   ones = torch.rand(input.shape) + 0.1
-  adjusted = (ones * (input - 0.5)) + 0.5
+  adjusted = (sobel_mask_clamped * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
 
   mseloss = nn.MSELoss()
