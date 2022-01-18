@@ -118,23 +118,22 @@ def symmetry_loss(input, weight = 1):
 
 
 def sobel_filters(img):
-    Kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.float32)
-    Ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], np.float32)
+    Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
+    Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
 
-    Ix = ndimage.filters.convolve(img, Kx)
-    Iy = ndimage.filters.convolve(img, Ky)
-    
-    G = np.hypot(Ix, Iy)
-    G = G / G.max() * 255
-    # theta = np.arctan2(Iy, Ix)
+    Ix = nn.functional.conv2d(img, Kx,stride=1, padding=0)
+    Iy = nn.functional.conv2d(img, Ky,stride=1, padding=0)
+
+    G = torch.hypot(Ix, Iy)
+    G = G / torch.amax(G) * 255
     
     return G
 
 def contrast_loss_edge(input):
   gray = transforms.Grayscale()
-  gray_sobel_input = gray(input).squeeze().numpy()
-  sobel_mask = sobel_filters(gray_sobel_input)
-  print('gray input', gray_sobel_input.shape, sobel_mask.shape)
+  gray_sobel_input = gray(input)
+  #sobel_mask = sobel_filters(gray_sobel_input)
+  print('gray input', gray_sobel_input.shape)
   #sobel_mask_clamped = mask / 255
   #sobel_mask_converted = 1.25 + (1 * sobel_mask_clamped)
   #adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
