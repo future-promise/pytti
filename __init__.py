@@ -2,6 +2,8 @@ import torch
 from torchvision import transforms
 from torch.nn import functional as F
 from torch import nn
+from scipy import ndimage
+import numpy as np
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -113,6 +115,31 @@ def symmetry_loss(input, weight = 1):
   mseloss = nn.MSELoss()
   cur_loss = mseloss(input, torch.flip(input,[3])) 
   return cur_loss * weight
+
+
+def sobel_filters(img):
+    Kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.float32)
+    Ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], np.float32)
+
+    Ix = ndimage.filters.convolve(img, Kx)
+    Iy = ndimage.filters.convolve(img, Ky)
+    
+    G = np.hypot(Ix, Iy)
+    G = G / G.max() * 255
+    # theta = np.arctan2(Iy, Ix)
+    
+    return G
+
+def contrast_loss_edge(input):
+  gray = transforms.Grayscale()
+  gray_input = gray(input)
+  print('gray input', gray_input.size())
+
+  #sobel_mask_clamped = mask / 255
+  #sobel_mask_converted = 1.25 + (1 * sobel_mask_clamped)
+  #adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
+  #return torch.clamp(adjusted, min=0, max=1)
+  return
 
 def contrast_loss(input, weight = 1, contrast_diff_weight = 1.25, brightness = 10):
   contrasted = (contrast_diff_weight * (input - 0.5)) + 0.5
