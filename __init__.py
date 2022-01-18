@@ -121,8 +121,8 @@ def sobel_filters(img):
     Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
     Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
 
-    Ix = nn.functional.conv2d(img, Kx,stride=1, padding=0)
-    Iy = nn.functional.conv2d(img, Ky,stride=1, padding=0)
+    Ix = nn.functional.conv2d(img, Kx,stride=1, padding='same')
+    Iy = nn.functional.conv2d(img, Ky,stride=1, padding='same')
 
     G = torch.hypot(Ix, Iy)
     G = G / torch.amax(G) * 255
@@ -156,10 +156,10 @@ def contrast_loss_edge(input, weight = 1, contrast_diff_weight = 1.25):
 
   sobel_mask_clamped = sobel_mask / 255
   sobel_mask_converted = 1 + (1 * sobel_mask_clamped)
-  sobel_mask_converted = nn.functional.pad(sobel_mask_converted, (1,1,1,1))
+  #sobel_mask_converted = nn.functional.pad(sobel_mask_converted, (1,1,1,1))
   #print('sobel shapes', sobel_mask_converted.shape, input.shape)
   #print('sobel mask eg', sobel_mask_converted.squeeze()[30])
-  adjusted = (1 * (input - 0.5)) + 0.5
+  adjusted = (sobel_mask_converted * (input - 0.5)) + 0.5
   adjusted = torch.clamp(adjusted, min=0, max=1)
 
   mseloss = nn.MSELoss()
