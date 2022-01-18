@@ -24,6 +24,7 @@ class DirectImageGuide():
     contrast_weight=1,
     sobel_weight=1,
     sobel_minimum=1,
+    sobel_start=0,
     # defaults
     optimizer = optim.Adam, lr = None, weight_decay = 0.0, **optimizer_params):
     self.image_rep = image_rep
@@ -41,6 +42,7 @@ class DirectImageGuide():
     self.contrast_weight = contrast_weight
     self.sobel_weight = sobel_weight
     self.sobel_minimum = sobel_minimum
+    self.sobel_start = sobel_start
 
   def run_steps(self, prompts, n_steps):
     """
@@ -88,8 +90,10 @@ class DirectImageGuide():
     #if i % 25 == 0:
     #print('contrast loss', contrast_loss(z, self.contrast_weight))
     #print('contrast edge loss', contrast_loss_edge(z, self.contrast_weight))
-
-    losses.append(contrast_loss_edge(z, self.contrast_weight, self.sobel_weight, self.sobel_minimum))
+    if i >= self.sobel_start:
+      losses.append(contrast_loss_edge(z, self.contrast_weight, self.sobel_weight, self.sobel_minimum))
+    else:
+      losses.append(contrast_loss(z, self.contrast_weight))
     #losses.append(contrast_loss_grayscale(z, self.contrast_weight))
     #print('sum losses', sum(losses))
     #print('---')
