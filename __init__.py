@@ -118,8 +118,8 @@ def symmetry_loss(input, weight = 1):
 
 
 def sobel_filters(img):
-    Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
-    Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
+    Kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
+    Ky = torch.tensor([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=torch.float).to(DEVICE).unsqueeze(0).unsqueeze(0)
 
     Ix = nn.functional.conv2d(img, Kx,stride=1, padding=0)
     Iy = nn.functional.conv2d(img, Ky,stride=1, padding=0)
