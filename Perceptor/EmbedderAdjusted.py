@@ -32,7 +32,8 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
 
   def alternateAugs(self, cutouts):
     cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
-    #cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
+    cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
+
     return cutouts_aug
 
   def forward(self, diff_image, input = None, i = 0, cuts_hook = None):
@@ -67,7 +68,6 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         
         #cutout_norm = Random_Normalization(cutout,0.5)
         cutout = random_grayscale(cutout,0.333)
-        cutout = random_vignette(cutout, 0.5)
 
         cutouts.append(random_crops(cutout))
 
