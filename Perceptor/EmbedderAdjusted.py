@@ -31,7 +31,7 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
     self.perceptors = perceptors
 
   def alternateAugs(self, cutouts):
-    cutouts_aug = DiffAugment(cutouts, 'cutout,translation')
+    cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
     #cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
     return cutouts_aug
 
