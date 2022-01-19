@@ -70,8 +70,8 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         cutouts.append(random_crops(cutout))
 
       
-      cutouts = self.augs(torch.cat(cutouts))
-      # cutouts = self.alternateAugs(cutouts)
+      cutouts = torch.cat(cutouts) #self.augs(torch.cat(cutouts))
+      cutouts = self.alternateAugs(cutouts)
 
       #if self.noise_fac:
       #  facs    = cutouts.new_empty([self.cutn * 3, 1, 1, 1]).uniform_(0, self.noise_fac)
