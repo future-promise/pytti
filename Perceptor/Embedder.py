@@ -28,6 +28,10 @@ class HDMultiClipEmbedder(nn.Module):
     self.output_axes = ('c', 'n', 'i')
     self.perceptors = perceptors
 
+  def alternateAugs(self, cutouts):
+    cutouts_aug = cutouts * noise_vignette(cutouts) 
+    return cutouts_aug
+
   def forward(self, diff_image, input = None, i = 0, cuts_hook = None):
     """
     diff_image: (DifferentiableImage) input image
@@ -65,7 +69,7 @@ class HDMultiClipEmbedder(nn.Module):
       cutouts = self.augs(torch.cat(cutouts))
       if i % 25 == 0:
         if cuts_hook:
-          cuts_hook(cutouts)
+          cuts_hook(self.alternateAugs(cutouts))
 
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
