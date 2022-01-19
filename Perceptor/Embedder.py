@@ -71,7 +71,6 @@ class HDMultiClipEmbedder(nn.Module):
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
       clip_in = normalize(cutouts)
-      print('clip_in', clip_in.shape, torch.amin(clip_in), torch.amax(clip_in))
       image_embeds.append(perceptor.encode_image(clip_in).float().unsqueeze(0))
 
     return cat_with_pad(image_embeds)
