@@ -58,7 +58,7 @@ class DirectImageGuide():
     """
     hook to get cuts
     """
-    print('cuts hook', cuts.shape) 
+    print('cuts hook call')
     pass
 
   def train(self, prompts, i):

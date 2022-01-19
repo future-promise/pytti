@@ -35,7 +35,7 @@ class HDMultiClipEmbedder(nn.Module):
     """
     perceptors=self.perceptors
     sideX, sideY = diff_image.image_shape
-    print('image shape', diff_image.image_shape)
+
     if input is None:
       input = format_module(diff_image, self)
     else:
@@ -64,7 +64,6 @@ class HDMultiClipEmbedder(nn.Module):
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
       if i % 25 == 0:
-        print('cutouts',i, cutouts.shape, torch.amin(cutouts), torch.amax(cutouts))
         if cuts_hook:
           cuts_hook(cutouts)
 
