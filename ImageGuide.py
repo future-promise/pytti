@@ -54,6 +54,13 @@ class DirectImageGuide():
     """
     pass
 
+  def cuts_hook(self, cuts):
+    """
+    hook to get cuts
+    """
+    print('cuts hook', cuts.shape) 
+    pass
+
   def train(self, prompts, i):
     """
     steps the optimizer
@@ -62,7 +69,7 @@ class DirectImageGuide():
     self.optimizer.zero_grad()
     z = self.image_rep.decode_training_tensor()
     losses = []
-    image_embeds = self.embedder(self.image_rep, input=z)
+    image_embeds = self.embedder(self.image_rep, input=z, i=i, cuts_hook = self.cuts_hook)
     for prompt in prompts:
         losses.append(prompt(format_input(image_embeds, self.embedder, prompt)))
     

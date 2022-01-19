@@ -28,7 +28,7 @@ class HDMultiClipEmbedder(nn.Module):
     self.output_axes = ('c', 'n', 'i')
     self.perceptors = perceptors
 
-  def forward(self, diff_image, input = None):
+  def forward(self, diff_image, input = None, i = 0, cuts_hook = None):
     """
     diff_image: (DifferentiableImage) input image
     returns images embeds
@@ -63,7 +63,10 @@ class HDMultiClipEmbedder(nn.Module):
         # F.adaptive_avg_pool2d scaling the image!!!! try transforms.Resize instead??
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
-      print('cutouts', cutouts.shape, torch.amin(cutouts), torch.amax(cutouts))
+      if i % 25 == 0:
+        print('cutouts',i, cutouts.shape, torch.amin(cutouts), torch.amax(cutouts))
+        if cuts_hook:
+          cuts_hook(cutouts)
 
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
