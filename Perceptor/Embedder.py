@@ -35,6 +35,7 @@ class HDMultiClipEmbedder(nn.Module):
     """
     perceptors=self.perceptors
     sideX, sideY = diff_image.image_shape
+    print('image shape', diff_image.image_shape)
     if input is None:
       input = format_module(diff_image, self)
     else:
@@ -57,11 +58,13 @@ class HDMultiClipEmbedder(nn.Module):
         offsety = torch.clamp(torch.randint(0 - paddingY, offsetYMax + paddingY, ()), 0, offsetYMax)
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
+      print('cutouts shape', cutouts.shape)
       cutouts = self.augs(torch.cat(cutouts))
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
       clip_in = normalize(cutouts)
+      print('clip_in', clip_in.shape)
       image_embeds.append(perceptor.encode_image(clip_in).float().unsqueeze(0))
 
     return cat_with_pad(image_embeds)
