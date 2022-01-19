@@ -66,7 +66,8 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
         
         #cutout_norm = Random_Normalization(cutout,0.5)
-        cutout= random_grayscale(cutout,0.333)
+        cutout = random_grayscale(cutout,0.333)
+        cutout = random_vignette(cutout, 0.5)
 
         cutouts.append(random_crops(cutout))
 
