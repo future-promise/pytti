@@ -1,6 +1,7 @@
 import torch
 from CLIP import clip
 import torchvision.transforms as T
+import torchvision.transforms.functional as TF
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 CLIP_PERCEPTORS = None
@@ -42,5 +43,13 @@ def Random_Normalization(img, prob):
     dice_roll = torch.rand((1,)).item()
     if dice_roll >= prob:
         return CLIP_Normalization(img)
+    else:
+        return img
+
+def random_grayscale(img, prob):
+    dice_roll0 = torch.rand((1,)).item()
+    dice_roll1 = torch.rand((1,)).item()
+    if dice_roll0 >= prob:
+        return torch.lerp(img, TF.rgb_to_grayscale(img), dice_roll1)
     else:
         return img

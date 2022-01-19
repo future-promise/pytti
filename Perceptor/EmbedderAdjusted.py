@@ -1,5 +1,5 @@
 from pytti import *
-from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette, random_crops, Random_Normalization
+from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette, random_crops, Random_Normalization, random_grayscale
 from pytti.Perceptor.Augment import DiffAugment
 import torch
 from torch import nn
@@ -64,9 +64,11 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         offsetx = torch.clamp(torch.randint(0 - paddingX, offsetXMax + paddingX, ()), 0, offsetXMax)
         offsety = torch.clamp(torch.randint(0 - paddingY, offsetYMax + paddingY, ()), 0, offsetYMax)
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
-        cutout_norm = Random_Normalization(cutout,0.5)
+        
+        #cutout_norm = Random_Normalization(cutout,0.5)
+        cutout= random_grayscale(cutout,0.333)
 
-        cutouts.append(random_crops(cutout_norm))
+        cutouts.append(random_crops(cutout))
 
       
       cutouts = torch.cat(cutouts) #self.augs(torch.cat(cutouts))
@@ -75,7 +77,7 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
       #if self.noise_fac:
       #  facs    = cutouts.new_empty([self.cutn * 3, 1, 1, 1]).uniform_(0, self.noise_fac)
       #  cutouts = cutouts + facs * torch.randn_like(cutouts)
-      clip_in = cutouts # normalize(cutouts)
+      clip_in =  normalize(cutouts)
 
       if i % 25 == 0:
         if cuts_hook:
