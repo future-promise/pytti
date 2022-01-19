@@ -32,7 +32,7 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
 
   def alternateAugs(self, cutouts):
     cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
-    cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
+    # cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
     return cutouts_aug
 
   def forward(self, diff_image, input = None, i = 0, cuts_hook = None):
@@ -71,9 +71,9 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
       cutouts = torch.cat(cutouts) #self.augs(torch.cat(cutouts))
       cutouts = self.alternateAugs(cutouts)
 
-      #if self.noise_fac:
-      #  facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
-      #  cutouts = cutouts + facs * torch.randn_like(cutouts)
+      if self.noise_fac:
+        facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
+        cutouts = cutouts + facs * torch.randn_like(cutouts)
       clip_in = normalize(cutouts)
 
       if i % 25 == 0:
