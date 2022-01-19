@@ -1,5 +1,5 @@
 from pytti import *
-from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette, random_crops, Random_Normalization, random_grayscale
+from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette, random_crops, Random_Normalization, random_grayscale, random_vignette
 from pytti.Perceptor.Augment import DiffAugment
 import torch
 from torch import nn

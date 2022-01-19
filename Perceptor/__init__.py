@@ -33,7 +33,7 @@ random_midcrop = torch.nn.Sequential(T.RandomCrop((144)),T.Resize((224,224), T.I
 random_maxcrop = torch.nn.Sequential(T.Resize((224,224), T.InterpolationMode.NEAREST),)
 
 def random_crops(img):
-  return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img) * noise_vignette(img)])
+  return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img)])
   #return torch.cat([random_336crop(img), random_448crop(img)])
 
 
@@ -51,5 +51,12 @@ def random_grayscale(img, prob):
     dice_roll1 = torch.rand((1,)).item()
     if dice_roll0 >= prob:
         return torch.lerp(img, TF.rgb_to_grayscale(img), dice_roll1)
+    else:
+        return img
+
+def random_vignette(img, prob):
+    dice_roll = torch.rand((1,)).item()
+    if dice_roll >= prob:
+        return img * noise_vignette(img)
     else:
         return img
