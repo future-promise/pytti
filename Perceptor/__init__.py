@@ -1,5 +1,6 @@
 import torch
 from CLIP import clip
+import torchvision.transforms as T
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 CLIP_PERCEPTORS = None
@@ -26,10 +27,10 @@ def noise_vignette(shape):
   return torch.cat([(torch.round(vignette**1 + torch.rand_like(vignette)*0.75).clamp(0,1)) for i in range(shape.shape[0])])
 
 
-#random_224crop = torch.nn.Sequential(T.RandomCrop((32)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
-#random_336crop = torch.nn.Sequential(T.RandomCrop((48)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
-#random_448crop = torch.nn.Sequential(T.RandomCrop((64)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
+random_lowcrop = torch.nn.Sequential(T.RandomCrop((24)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
+random_midcrop = torch.nn.Sequential(T.RandomCrop((36)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
+random_maxcrop = torch.nn.Sequential(T.RandomCrop((48)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
 
-# def random_crops(img):
-#    return torch.cat([random_224crop(img), random_336crop(img), random_448crop(img)])
-# return torch.cat([random_336crop(img), random_448crop(img)])
+def random_crops(img):
+  return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img)])
+  #return torch.cat([random_336crop(img), random_448crop(img)])

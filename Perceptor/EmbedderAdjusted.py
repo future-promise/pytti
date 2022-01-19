@@ -1,5 +1,5 @@
 from pytti import *
-from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette
+from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette, random_crops
 from pytti.Perceptor.Augment import DiffAugment
 import torch
 from torch import nn
@@ -31,8 +31,8 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
     self.perceptors = perceptors
 
   def alternateAugs(self, cutouts):
-    #cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
-    cutouts_aug = cutouts * noise_vignette(cutouts) 
+    cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
+    cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
     return cutouts_aug
 
   def forward(self, diff_image, input = None, i = 0, cuts_hook = None):
@@ -72,7 +72,8 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         #cutouts.append random_crops(cutout) will give [3,3,width,height]!!!!! get you some crops, resized to right size
         # print('resizing', resizeToClip(cutout).shape, F.adaptive_avg_pool2d(cutout, cut_size).shape)
         # cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
-        cutouts.append(resizeToClip(cutout))
+        #cutouts.append(resizeToClip(cutout))
+        cutouts.append(random_crops(cutout))
 
       
       cutouts = self.augs(torch.cat(cutouts))
