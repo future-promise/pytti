@@ -32,5 +32,5 @@ random_midcrop = torch.nn.Sequential(T.RandomCrop((144)),T.Resize((224,224), T.I
 random_maxcrop = torch.nn.Sequential(T.Resize((224,224), T.InterpolationMode.NEAREST),)
 
 def random_crops(img):
-  return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img)])
+  return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img) * noise_vignette(img)])
   #return torch.cat([random_336crop(img), random_448crop(img)])
