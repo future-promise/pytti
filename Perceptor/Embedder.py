@@ -58,11 +58,13 @@ class HDMultiClipEmbedder(nn.Module):
         offsety = torch.clamp(torch.randint(0 - paddingY, offsetYMax + paddingY, ()), 0, offsetYMax)
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
 
-        cutout_pool2d = F.adaptive_avg_pool2d(cutout, cut_size)
-        print('cutout shape', cutout.shape, cutout_pool2d.shape, torch.amin(cutout_pool2d), torch.amax(cutout_pool2d))
+        # cutout_pool2d = F.adaptive_avg_pool2d(cutout, cut_size)
+        # print('cutout shape', cutout.shape, cutout_pool2d.shape, torch.amin(cutout_pool2d), torch.amax(cutout_pool2d))
         # F.adaptive_avg_pool2d scaling the image!!!! try transforms.Resize instead??
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
+      print('cutouts', cutouts.shape, torch.amin(cutouts), torch.amax(cutouts))
+
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
