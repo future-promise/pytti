@@ -73,7 +73,7 @@ class HDMultiClipEmbedder(nn.Module):
           cuts_hook(self.alternateAugs(cutouts))
 
       if self.noise_fac:
-        facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
+        facs    = cutouts.new_empty([self.cutn * 3, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
       clip_in = normalize(cutouts)
       image_embeds.append(perceptor.encode_image(clip_in).float().unsqueeze(0))
