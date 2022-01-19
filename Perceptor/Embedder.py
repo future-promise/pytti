@@ -1,6 +1,6 @@
 from pytti import *
 from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette
-
+from pytti.Perceptor.Augment import DiffAugment
 import torch
 from torch import nn
 
