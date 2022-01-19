@@ -27,7 +27,7 @@ def noise_vignette(shape):
   return torch.cat([(torch.round(vignette**1 + torch.rand_like(vignette)*0.75).clamp(0,1)) for i in range(shape.shape[0])])
 
 
-random_lowcrop = torch.nn.Sequential(T.CenterCrop((144)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
+random_lowcrop = torch.nn.Sequential(T.RandomCrop((96)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
 random_midcrop = torch.nn.Sequential(T.RandomCrop((144)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
 random_maxcrop = torch.nn.Sequential(T.Resize((224,224), T.InterpolationMode.NEAREST),)
 
