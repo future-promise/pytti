@@ -29,7 +29,7 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
     self.perceptors = perceptors
 
   def alternateAugs(self, cutouts):
-    cutouts_aug = DiffAugment(cutouts, 'color,cutout,translation')
+    cutouts_aug = cutouts # DiffAugment(cutouts, 'color,cutout,translation')
     cutouts_aug = cutouts_aug * noise_vignette(cutouts) 
     return cutouts_aug
 
@@ -71,14 +71,17 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
-      if i % 25 == 0:
-        if cuts_hook:
-          cuts_hook(self.alternateAugs(cutouts))
+      #cutouts = self.alternateAugs(cutouts)
 
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
         cutouts = cutouts + facs * torch.randn_like(cutouts)
       clip_in = normalize(cutouts)
+
+      if i % 25 == 0:
+        if cuts_hook:
+          cuts_hook(cutouts)
+
       image_embeds.append(perceptor.encode_image(clip_in).float().unsqueeze(0))
 
     return cat_with_pad(image_embeds)
