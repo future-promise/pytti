@@ -1,5 +1,5 @@
 from pytti import *
-from pytti.Perceptor import CLIP_PERCEPTORS
+from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette
 
 import torch
 from torch import nn
