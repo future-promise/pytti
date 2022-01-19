@@ -65,19 +65,10 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         offsety = torch.clamp(torch.randint(0 - paddingY, offsetYMax + paddingY, ()), 0, offsetYMax)
         cutout = input[:, :, offsety:offsety + size, offsetx:offsetx + size]
 
-        # cutout_pool2d = F.adaptive_avg_pool2d(cutout, cut_size)
-        # print('cutout shape', cutout.shape, cutout_pool2d.shape, torch.amin(cutout_pool2d), torch.amax(cutout_pool2d))
-        # F.adaptive_avg_pool2d scaling the image!!!! try transforms.Resize instead??
-        
-        #cutouts.append random_crops(cutout) will give [3,3,width,height]!!!!! get you some crops, resized to right size
-        # print('resizing', resizeToClip(cutout).shape, F.adaptive_avg_pool2d(cutout, cut_size).shape)
-        # cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
-        #print('shapes', cutout.shape, random_crops(cutout).shape)
-        #cutouts.append(resizeToClip(cutout))
         cutouts.append(random_crops(cutout))
 
       
-      cutouts = self.augs(torch.cat(cutouts))
+      cutouts = torch.cat(cutouts) #self.augs(torch.cat(cutouts))
       cutouts = self.alternateAugs(cutouts)
 
       #if self.noise_fac:

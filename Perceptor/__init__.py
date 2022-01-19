@@ -29,7 +29,7 @@ def noise_vignette(shape):
 
 random_lowcrop = torch.nn.Sequential(T.RandomCrop((96)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
 random_midcrop = torch.nn.Sequential(T.RandomCrop((144)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
-random_maxcrop = torch.nn.Sequential(T.RandomCrop((188)),T.Resize((224,224), T.InterpolationMode.NEAREST),)
+random_maxcrop = torch.nn.Sequential(T.Resize((224,224), T.InterpolationMode.NEAREST),)
 
 def random_crops(img):
   return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img)])
