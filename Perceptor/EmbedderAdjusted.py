@@ -71,7 +71,7 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
       cutouts = self.augs(torch.cat(cutouts))
-      #cutouts = self.alternateAugs(cutouts)
+      cutouts = self.alternateAugs(cutouts)
 
       if self.noise_fac:
         facs    = cutouts.new_empty([self.cutn, 1, 1, 1]).uniform_(0, self.noise_fac)
