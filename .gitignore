@@ -131,3 +131,5 @@ dmypy.json
 #way too big to check into github
 */*.ckbt
 *.ckbt
+
+prompts.txt
