@@ -3,8 +3,10 @@ from pytti.Perceptor import CLIP_PERCEPTORS, noise_vignette
 from pytti.Perceptor.Augment import DiffAugment
 import torch
 from torch import nn
-
+import torchvision.transforms as T
 import kornia.augmentation as K
+
+resizeToClip = T.Resize((224,224), T.InterpolationMode.NEAREST)
 
 class HDMultiClipEmbedderAdjusted(nn.Module):
   """
@@ -68,8 +70,9 @@ class HDMultiClipEmbedderAdjusted(nn.Module):
         # F.adaptive_avg_pool2d scaling the image!!!! try transforms.Resize instead??
         
         #cutouts.append random_crops(cutout) will give [3,3,width,height]!!!!! get you some crops, resized to right size
-        
+        print('resizing', resizeToClip(cutout).shape, F.adaptive_avg_pool2d(cutout, cut_size).shape)
         cutouts.append(F.adaptive_avg_pool2d(cutout, cut_size))
+      
       cutouts = self.augs(torch.cat(cutouts))
       cutouts = self.alternateAugs(cutouts)
 
