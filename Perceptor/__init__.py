@@ -34,3 +34,13 @@ random_maxcrop = torch.nn.Sequential(T.Resize((224,224), T.InterpolationMode.NEA
 def random_crops(img):
   return torch.cat([random_lowcrop(img), random_midcrop(img), random_maxcrop(img) * noise_vignette(img)])
   #return torch.cat([random_336crop(img), random_448crop(img)])
+
+
+CLIP_Normalization = T.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
+
+def Random_Normalization(img, prob):
+    dice_roll = torch.rand((1,)).item()
+    if dice_roll >= prob:
+        return CLIP_Normalization(img)
+    else:
+        return img
