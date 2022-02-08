@@ -15,6 +15,7 @@ class HDMultiClipEmbedder(nn.Module):
   """
   def __init__(self, perceptors=CLIP_PERCEPTORS, cutn = 40, noise_fac = 0.1):
     super().__init__()
+    print('HDMultiClipEmbedder perceptors', perceptors)
     self.cut_sizes = [p.visual.input_resolution for p in perceptors]
     self.cutn = cutn
     self.noise_fac = noise_fac

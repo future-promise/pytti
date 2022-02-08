@@ -6,6 +6,7 @@ CLIP_PERCEPTORS = None
 
 def init_clip(clip_models):
   global CLIP_PERCEPTORS
+  print('init_clip', clip_models)
   if CLIP_PERCEPTORS is None:
     CLIP_PERCEPTORS = [clip.load(model, jit=False)[0].eval().requires_grad_(False).to(DEVICE) for model in clip_models]
 
