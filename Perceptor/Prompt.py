@@ -24,12 +24,14 @@ class MultiClipPrompt(nn.Module):
   """
   def __init__(self, prompt_string, perceptors=CLIP_PERCEPTORS, device=DEVICE):
     super().__init__()
+
     tokens = re.split(':', prompt_string, 2)
     tokens = tokens + ['', '1', '-inf'][len(tokens):]
     text, weight, stop = tokens
     text   = text.strip()
     weight = float(weight.strip())
     stop   = float(stop.strip())
+    print("Prompt.py: Perceptors:", perceptors)
     embeds = cat_with_pad([p.encode_text(clip.tokenize(text).to(device)).float() for p in perceptors])
     self.register_buffer('embeds',  embeds)
     self.register_buffer('weight', torch.as_tensor(weight))
